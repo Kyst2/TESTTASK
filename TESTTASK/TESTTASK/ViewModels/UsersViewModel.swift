@@ -27,7 +27,6 @@ class UsersViewModel: ObservableObject {
         guard !isLoading && canLoadingMore else { return }
         isLoading = true
         errorMessage = nil
-        
         APIClient.shared.getUsers(page: currentPage, count: fixedCount) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
