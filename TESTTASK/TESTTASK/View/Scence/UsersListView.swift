@@ -7,16 +7,7 @@ struct UsersListView: View {
         VStack {
             TopBar()
             
-            ScrollView{
-                LazyVStack {
-                    ForEach(model.users) { user in
-                        UsersCard(user: user)
-                            .onAppear{
-                                model.loadMoreUsersIfNeeded(currentUser: user)
-                            }
-                    }
-                }
-            }
+            UsersList()
             
             BottomBar()
         }
@@ -31,6 +22,19 @@ struct UsersListView: View {
                 .font(.nunoRegular(size: 20))
                 .lineSpacing(24)
                 .padding(16)
+        }
+    }
+    
+    func UsersList() -> some View {
+        ScrollView{
+            LazyVStack {
+                ForEach(model.users) { user in
+                    UsersCard(user: user)
+                        .onAppear{
+                            model.loadMoreUsersIfNeeded(currentUser: user)
+                        }
+                }
+            }
         }
     }
     
