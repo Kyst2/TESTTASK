@@ -23,14 +23,15 @@ struct UsersListView: View {
     }
     
     func TopBar() -> some View {
-        HStack {
+        ZStack {
+            TTColors.primary
+                .frame(height: 56)
+            
             Text("Working with POST request")
                 .font(.nunoRegular(size: 20))
                 .lineSpacing(24)
                 .padding(16)
         }
-        .frame(maxWidth: .infinity)
-        .background(TTColors.primary)
     }
     
     func BottomBar() -> some View {
@@ -49,6 +50,10 @@ struct UsersListView: View {
             Spacer()
         }
     }
+    
+    ////////////////
+    ///HELPERS
+    ////////////////
     
     struct BottomBarBtn: View {
         let img: String
