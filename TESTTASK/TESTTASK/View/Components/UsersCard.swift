@@ -7,7 +7,6 @@ struct UsersCard: View {
     @State private var isLoading = true
     var body: some View {
         HStack {
-            
             VStack {
                 ZStack {
                     if isLoading {

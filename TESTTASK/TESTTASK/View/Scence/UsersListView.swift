@@ -4,33 +4,78 @@ struct UsersListView: View {
     @ObservedObject var model: UsersViewModel = UsersViewModel()
     
     var body: some View {
-        ScrollView{
-            LazyVStack {
-                ForEach(model.users) { user in
-                    UsersCard(user: user)
-                        .onAppear{
-                            model.loadMoreUsersIfNeeded(currentUser: user)
-                        }
+        VStack {
+            TopBar()
+            
+            ScrollView{
+                LazyVStack {
+                    ForEach(model.users) { user in
+                        UsersCard(user: user)
+                            .onAppear{
+                                model.loadMoreUsersIfNeeded(currentUser: user)
+                            }
+                    }
                 }
             }
+            
+            BottomBar()
         }
     }
-}
-
-extension View {
-    // Если метод refreshable вызывается на iOS 14, мы просто возвращаем исходный вид
-    @ViewBuilder
-    func onRefreshCompat(perform action: @escaping () -> Void) -> some View {
-        if #available(iOS 15.0, *) {
-            // На iOS 15+ используем встроенный метод refreshable
-            self.refreshable {
-                // Выполняем действие обновления
-                action()
+    
+    func TopBar() -> some View {
+        HStack {
+            Text("Working with POST request")
+                .font(.nunoRegular(size: 20))
+                .lineSpacing(24)
+                .padding(16)
+        }
+        .frame(maxWidth: .infinity)
+        .background(TTColors.primary)
+    }
+    
+    func BottomBar() -> some View {
+        HStack {
+            Spacer()
+            
+            BottomBarBtn(img: "person.3.sequence.fill", text: "Users", color: TTColors.secondary) {
+                
             }
-        } else {
-            // На iOS 14 просто возвращаем вид без функциональности pull-to-refresh
-            // В реальном приложении здесь можно было бы реализовать собственную логику
-            self
+            
+            Spacer()
+            
+            BottomBarBtn(img: "person.crop.circle.fill.badge.plus", text: "Sing up", color: .black.opacity(0.6)) {
+                
+            }
+            Spacer()
+        }
+    }
+    
+    struct BottomBarBtn: View {
+        let img: String
+        let text: String
+        let color: Color
+        
+        let action: () -> Void
+        
+        var body: some View {
+            Button {
+                action()
+            } label: {
+                HStack {
+                    Image(systemName: img)
+                        .frame(width: 14, height: 14)
+                        .foregroundStyle(color)
+                        
+                    
+                    Text(text)
+                        .font(.nunoSemiBold(size: 16))
+                        .lineSpacing(24)
+                        .kerning(0.1)
+                        .foregroundStyle(color)
+                        .padding(.leading, 8)
+                }
+                .padding(.vertical,16)
+            }
         }
     }
 }
