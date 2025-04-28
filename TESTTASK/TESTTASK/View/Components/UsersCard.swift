@@ -6,8 +6,8 @@ struct UsersCard: View {
     @State private var image: UIImage?
     @State private var isLoading = true
     var body: some View {
-        HStack(alignment: .top) {
-            VStack {
+        HStack(alignment: .top, spacing: 16) {
+            VStack(spacing: 0){
                 ZStack {
                     if isLoading {
                         Circle()
@@ -29,7 +29,7 @@ struct UsersCard: View {
                 }
             }
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(user.name)
                     .foregroundStyle(.black.opacity(0.87))
                     .font(.nunoRegular(size: 18))
@@ -40,6 +40,7 @@ struct UsersCard: View {
                     .foregroundStyle(.black.opacity(0.6))
                     .font(.nunoRegular(size: 14))
                     .lineSpacing(20)
+                    .padding(.bottom,4)
                 
                 Text(user.email)
                     .foregroundStyle(.black.opacity(0.87))
@@ -50,11 +51,13 @@ struct UsersCard: View {
                     .foregroundStyle(.black.opacity(0.87))
                     .font(.nunoRegular(size: 14))
                     .lineSpacing(20)
+                    .padding(.bottom, 19)
                 
                 Divider()
             }
         }
-        .padding(.horizontal,16)
+        .padding(.top, 14)
+        .padding(.horizontal, 16)
         .onAppear{
             loadImage()
         }
