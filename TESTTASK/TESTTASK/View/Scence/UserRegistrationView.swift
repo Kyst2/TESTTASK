@@ -2,6 +2,8 @@ import SwiftUI
 
 struct UserRegistrationView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Color.black
+        }
     }
 }

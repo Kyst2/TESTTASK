@@ -4,6 +4,7 @@ struct TTColors {
     static let primary: Color = Color(hex: 0xf4e041)
     static let secondary: Color = Color(hex: 0x00bdd3)
     static let secondaryDrk: Color = Color(hex: 0x009bbd)
+    static let gray: Color = Color(hex: 0xf4f4f4)
     
     static let btnPres: Color = Color(hex: 0xffc700)
     static let btnDis: Color = Color(hex: 0xdedede)
