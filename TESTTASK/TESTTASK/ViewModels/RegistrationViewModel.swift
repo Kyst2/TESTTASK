@@ -14,11 +14,10 @@ class RegistrationViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var registrationSuccessful: Bool = false
     
-    @Published var nameValid: Bool = true
-    @Published var emailValid: Bool = true
-    @Published var phoneValid: Bool = true
-    @Published var positionValid: Bool = true
-    @Published var photoValid: Bool = true
+    @Published var nameError: String?
+    @Published var emailError: String?
+    @Published var phoneError: String?
+    @Published var photoError: String?
     
     init() {
         loadPositions()
@@ -47,42 +46,20 @@ class RegistrationViewModel: ObservableObject {
         }
     }
     
-    func validateForm() -> Bool {
-        nameValid = !name.isEmpty && name.count >= 2 && name.count <= 60
-        
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-        emailValid = emailPredicate.evaluate(with: email)
-        
-        let phoneRegex = "^\\+380[0-9]{9}$"
-        let phonePredicate = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-        phoneValid = phonePredicate.evaluate(with: phone)
-        
-        positionValid = selectedPositionId != nil
-        
-        photoValid = photo != nil
-        
-        return nameValid && emailValid && phoneValid && positionValid && photoValid
-    }
-    
     func registerUser() {
-        guard validateForm() else {
-            errorMessage = "Please fill in all fields correctly"
+        guard validateName() && validateEmail() && validatePhone() else {
             return
         }
         
         guard let photo = photo else {
-            errorMessage = "Please select a photo."
             return
         }
         
         guard let positionId = selectedPositionId else {
-            errorMessage = "Please select a position"
             return
         }
         
         isRegistering = true
-        errorMessage = nil
         
         let userData = UserRegistrationModel(
             name: name,
@@ -113,5 +90,48 @@ class RegistrationViewModel: ObservableObject {
         phone = ""
         photo = nil
         errorMessage = nil
+    }
+}
+
+extension RegistrationViewModel {
+    func validateName() -> Bool {
+        if name.isEmpty {
+            nameError = "Name is required."
+            return false
+        } else if name.count < 2 || name.count > 60 {
+            nameError = "Name must be between 2 and 60 characters."
+            return false
+        }
+        return true
+    }
+    
+    func validateEmail() -> Bool {
+        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        if !predicate.evaluate(with: email) {
+            emailError = "Invalid email format."
+            return false
+        }
+        
+        return true
+    }
+    
+    func validatePhone() -> Bool {
+        let regex = #"^\+38(?:\d{9}|\(\d{3}\)\s\d{3}\s-\s\d{2}\s-\s\d{2})$"#
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        if !predicate.evaluate(with: phone) {
+            phoneError = "Phone must be in format +38(XXX) XXX - XX - XX."
+            return false
+        }
+        return true
+    }
+        
+    func validatePhoto() -> Bool {
+        if photo == nil {
+            photoError = "Please select a photo."
+            return false
+        }
+        
+        return true
     }
 }
