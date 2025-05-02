@@ -31,7 +31,6 @@ struct ContentView: View {
             
             Text("Working with \(requestTypeText) request")
                 .font(.nunoRegular(size: 20))
-                .lineSpacing(24)
         }
     }
     
@@ -79,7 +78,6 @@ struct BottomBarBtn: View {
                 
                 Text(text)
                     .font(.nunoSemiBold(size: 16))
-                    .lineSpacing(24)
                     .kerning(0.1)
                     .foregroundStyle(buttonColor)
                     .padding(.leading, 8)

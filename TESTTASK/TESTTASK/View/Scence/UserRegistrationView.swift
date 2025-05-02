@@ -76,13 +76,14 @@ struct SelectPhoto: View {
                     Image(uiImage: photo)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 20 , height: 20)
+                        .frame(width: 70 , height: 70)
                 } else {
                     Text("Upload your photo")
                         .foregroundColor(accentColors)
                         .font(.nunoRegular(size: 16))
                 }
                 
+                Spacer()
                 
                 Button {
                     isShowDialog = true
@@ -91,6 +92,7 @@ struct SelectPhoto: View {
                         .foregroundStyle(.blue)
                 }
             }
+            .frame(maxWidth: .infinity)
             .padding(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 6)
@@ -129,6 +131,20 @@ struct SelectPhoto: View {
             EmptyView()
         }
         .photosPicker(isPresented: $isShowPhotoPicker, selection: $selectedItem)
+        .onChange(of: image) { newItem in
+            model.photo = newItem
+        }
+        .onChange(of: selectedItem) { newItem in
+            Task {
+                // Обрабатываем выбранное фото
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        model.photo = uiImage
+                    }
+                }
+            }
+        }
     }
     
     private var accentColors: Color {
