@@ -18,6 +18,7 @@ struct ContentView: View {
             
             BottomBar()
         }
+        .background(Color.white)
     }
     
     @ViewBuilder

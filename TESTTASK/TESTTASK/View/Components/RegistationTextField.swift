@@ -2,7 +2,7 @@ import SwiftUI
 
 enum FieldState {
     case normal
-    case error(String)
+    case error
 }
 
 struct RegistrationTextField: View {
@@ -44,10 +44,12 @@ struct RegistrationTextField: View {
                 Text(errorText)
                     .font(.nunoRegular(size: 12))
                     .foregroundStyle(TTColors.red)
+                    .padding(.horizontal, 16)
             } else if let supportingText = supportingText{
                 Text(supportingText)
                     .font(.nunoRegular(size: 12))
                     .foregroundStyle(.black.opacity(0.6))
+                    .padding(.horizontal, 16)
             }
         }
     }

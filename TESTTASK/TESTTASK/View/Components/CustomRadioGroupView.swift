@@ -30,7 +30,7 @@ struct CustomRadioButton<T: Hashable>: View {
             
             Text(label)
                 .font(.nunoRegular(size: 16))
-                .foregroundColor(.primary)
+                .foregroundColor(.black.opacity(0.87))
             
             Spacer()
         }
