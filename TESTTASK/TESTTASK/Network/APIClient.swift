@@ -127,8 +127,10 @@ class APIClient {
             completion(.failure(APIError.invalidURL))
             return
         }
-        guard let avatarData = avatar.jpegData(compressionQuality: 0.7) else {
-            completion(.failure(NSError(domain: "APIClient", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert avatar to JPEG"])))
+        
+        guard let resizedAvatar = avatar.resized(to: CGSize(width: 70, height: 70)),
+              let avatarData = resizedAvatar.jpegData(compressionQuality: 0.7) else {
+            completion(.failure(NSError(domain: "APIClient", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to resize avatar"])))
             return
         }
         
@@ -137,11 +139,9 @@ class APIClient {
         
         let boundary = "Boundary-\(UUID().uuidString)"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue(token, forHTTPHeaderField: "Token")
         
         var body = Data()
-        
         body.append(textFormField(named: "name", value: user.name, boundary: boundary))
         body.append(textFormField(named: "email", value: user.email, boundary: boundary))
         body.append(textFormField(named: "phone", value: user.phone, boundary: boundary))
@@ -150,7 +150,6 @@ class APIClient {
         body.append(imageFormField(named: "photo", fileName: "avatar.jpg", mimeType: "image/jpeg", data: avatarData, boundary: boundary))
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-        
         request.httpBody = body
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -230,5 +229,16 @@ extension APIClient {
         fieldData.append(data)
         fieldData.append("\r\n".data(using: .utf8)!)
         return fieldData
+    }
+}
+
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage? {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 }

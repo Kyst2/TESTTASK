@@ -16,7 +16,9 @@ struct UserRegistrationView: View {
                 
                 PositionalsRadioGroup()
                 
-                SelectPhoto(model: model)
+                SelectPhotoView(model: model)
+                
+                SignUpBtn()
             }
             .padding(.top, 32)
             .padding(.horizontal, 16)
@@ -25,17 +27,17 @@ struct UserRegistrationView: View {
     
     @ViewBuilder
     func PersonalData() -> some View {
-        RegistrationTextField(label: "Your name",
+        FloatingLabelTextField(label: "Your name",
                               text: $model.name,
                               errorText: $model.nameError,
                               supportingText: nil)
         
-        RegistrationTextField(label: "Email",
+        FloatingLabelTextField(label: "Email",
                               text: $model.email,
                               errorText: $model.emailError,
                               supportingText: nil)
         
-        RegistrationTextField(label: "Phone",
+        FloatingLabelTextField(label: "Phone",
                               text: $model.phone,
                               errorText: $model.phoneError,
                               supportingText: "+38(XXX) XXX - XX - XX")
@@ -48,7 +50,7 @@ struct UserRegistrationView: View {
             .foregroundStyle(.black.opacity(0.87))
         
         if !model.positions.isEmpty {
-            CustomRadioGroupView(model: model)
+            RadioButtonGroupView(model: model)
                 .padding(.top,-12)
         } else if model.isLoading {
             ProgressView()
@@ -56,138 +58,21 @@ struct UserRegistrationView: View {
                 .frame(maxWidth: .infinity)
         }
     }
-}
+    
+    func SignUpBtn() -> some View {
+        Button {
+            model.registerUser()
+        } label: {
+            HStack{
+                Text("Sign Up")
+                    
+            }
+        }
 
-struct SelectPhoto: View {
-    @ObservedObject var model: RegistrationViewModel
-    @State  var image: UIImage?
-    @State var selectedItem: PhotosPickerItem?
-    
-    @State private var isShowDialog: Bool = false
-    @State private var isShowPhotoPicker = false
-    @State private var isShowCamera = false
-    
-    var state: FieldState = .normal
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                if let photo = model.photo {
-                    Image(uiImage: photo)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 70 , height: 70)
-                } else {
-                    Text("Upload your photo")
-                        .foregroundColor(accentColors)
-                        .font(.nunoRegular(size: 16))
-                }
-                
-                Spacer()
-                
-                Button {
-                    isShowDialog = true
-                } label: {
-                    Text("Upload")
-                        .foregroundStyle(.blue)
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color(hex: 0xd0cfcf), lineWidth: 1)
-            )
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color.white)
-            )
-            
-            if let errorText = model.photoError{
-                Text(errorText)
-                    .font(.nunoRegular(size: 12))
-                    .foregroundStyle(TTColors.red)
-                    .padding(.horizontal, 16)
-            }
-        }
-        .confirmationDialog("Choose how you want to add a photo", isPresented: $isShowDialog, titleVisibility: .visible, actions: {
-            Button {
-                isShowCamera.toggle()
-            } label: {
-            Text("Camera")
-            }
-            
-            Button {
-                isShowPhotoPicker.toggle()
-            } label: {
-                Text("Gallery")
-            }
-        })
-        .fullScreenCover(isPresented: $isShowCamera) {
-            CameraView(image: $image)
-        }
-        
-        PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
-            EmptyView()
-        }
-        .photosPicker(isPresented: $isShowPhotoPicker, selection: $selectedItem)
-        .onChange(of: image) { newItem in
-            model.photo = newItem
-        }
-        .onChange(of: selectedItem) { newItem in
-            Task {
-                // Обрабатываем выбранное фото
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        model.photo = uiImage
-                    }
-                }
-            }
-        }
-    }
-    
-    private var accentColors: Color {
-        switch state {
-        case .normal: return Color.black.opacity(0.48)
-        case .error: return TTColors.red
-        }
     }
 }
 
-struct CameraView: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
 
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.sourceType = .camera
-        picker.delegate = context.coordinator
-        return picker
-    }
 
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: CameraView
-
-        init(_ parent: CameraView) {
-            self.parent = parent
-        }
-
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let selectedImage = info[.originalImage] as? UIImage {
-                parent.image = selectedImage
-            }
-            picker.dismiss(animated: true)
-        }
-
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
-        }
-    }
-}
 

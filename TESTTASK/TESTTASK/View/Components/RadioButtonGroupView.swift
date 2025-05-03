@@ -1,18 +1,18 @@
 import SwiftUI
 
-struct CustomRadioGroupView: View {
+struct RadioButtonGroupView: View {
     @ObservedObject var model: RegistrationViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
             ForEach(model.positions) { position in
-                CustomRadioButton(label: position.name, value: position.id, selection: $model.selectedPositionId)
+                RadioButton(label: position.name, value: position.id, selection: $model.selectedPositionId)
             }
         }
     }
 }
 
-struct CustomRadioButton<T: Hashable>: View {
+struct RadioButton<T: Hashable>: View {
     let label: String
     let value: T
     @Binding var selection: T

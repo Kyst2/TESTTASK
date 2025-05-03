@@ -47,7 +47,7 @@ class RegistrationViewModel: ObservableObject {
     }
     
     func registerUser() {
-        guard validateName() && validateEmail() && validatePhone() else {
+        guard validateAll() else {
             return
         }
         
@@ -67,7 +67,7 @@ class RegistrationViewModel: ObservableObject {
             phone: phone,
             positionId: positionId
         )
-        
+        print("userData")
         APIClient.shared.registerUser(user: userData, avatar: photo) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isRegistering = false
@@ -94,6 +94,15 @@ class RegistrationViewModel: ObservableObject {
 }
 
 extension RegistrationViewModel {
+    func validateAll() -> Bool {
+        let isNameValid = validateName()
+        let isEmailValid = validateEmail()
+        let isPhoneValid = validatePhone()
+        let isPhotoValid = validatePhoto()
+
+        return isNameValid && isEmailValid && isPhoneValid && isPhotoValid
+    }
+    
     func validateName() -> Bool {
         if name.isEmpty {
             nameError = "Name is required."
@@ -106,7 +115,7 @@ extension RegistrationViewModel {
     }
     
     func validateEmail() -> Bool {
-        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let regex = #"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$"#
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         if !predicate.evaluate(with: email) {
             emailError = "Invalid email format."
@@ -117,7 +126,7 @@ extension RegistrationViewModel {
     }
     
     func validatePhone() -> Bool {
-        let regex = #"^\+38(?:\d{9}|\(\d{3}\)\s\d{3}\s-\s\d{2}\s-\s\d{2})$"#
+        let regex = #"^\+?380[0-9]{9}$"#
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         if !predicate.evaluate(with: phone) {
             phoneError = "Phone must be in format +38(XXX) XXX - XX - XX."

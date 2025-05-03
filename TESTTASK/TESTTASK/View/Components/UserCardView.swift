@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct UsersCard: View {
+struct UserCardView: View {
     let user: User
     
     @State private var image: UIImage?

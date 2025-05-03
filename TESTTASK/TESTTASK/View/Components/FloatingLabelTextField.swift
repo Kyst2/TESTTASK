@@ -5,20 +5,23 @@ enum FieldState {
     case error
 }
 
-struct RegistrationTextField: View {
+struct FloatingLabelTextField: View {
     var label: String
     @Binding var text: String
     @Binding var errorText: String?
     let supportingText: String?
-    var state: FieldState = .normal
-
+    
+    private var state: FieldState {
+        errorText == nil ? .normal : .error
+    }
+    
     @FocusState private var isFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .leading) {
                 Text(label)
-                    .foregroundColor(accentColors)
+                    .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))
                     .font(.nunoRegular(size: 16))
                     .offset(y: (isFocused || !text.isEmpty) ? -22 : 0)
                     .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1, anchor: .leading)
@@ -26,14 +29,14 @@ struct RegistrationTextField: View {
 
                 TextField("", text: $text)
                     .font(.nunoRegular(size: 16))
-                    .foregroundStyle(.black.opacity(0.87))
+                    .foregroundStyle(Color.black.opacity(0.87))
                     .focused($isFocused)
                     .padding(.top, 8)
             }
             .padding(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color(hex: 0xd0cfcf), lineWidth: 1)
+                    .stroke(accentColors(grayColor: Color(hex: 0xd0cfcf)), lineWidth: 1)
             )
             .background(
                 RoundedRectangle(cornerRadius: 6)
@@ -53,10 +56,10 @@ struct RegistrationTextField: View {
             }
         }
     }
-
-    private var accentColors: Color {
+    
+    private func accentColors(grayColor: Color) -> Color {
         switch state {
-        case .normal: return isFocused ? TTColors.secondary : Color.black.opacity(0.48)
+        case .normal: return isFocused ? TTColors.secondary : grayColor
         case .error: return TTColors.red
         }
     }

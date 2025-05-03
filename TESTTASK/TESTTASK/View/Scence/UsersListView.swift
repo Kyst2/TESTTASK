@@ -7,7 +7,7 @@ struct UsersListView: View {
         ScrollView{
             LazyVStack {
                 ForEach(model.users) { user in
-                    UsersCard(user: user)
+                    UserCardView(user: user)
                         .onAppear{
                             model.loadMoreUsersIfNeeded(currentUser: user)
                         }
