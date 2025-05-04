@@ -27,7 +27,7 @@ struct UserRegistrationView: View {
             switch result {
                 case .success:
                     ResultModalView(
-                        imageName: "SuccessImage",
+                        imageName: "successImg",
                         title: "User successfully registered",
                         buttonText: "Got it"
                     ) {
@@ -35,7 +35,7 @@ struct UserRegistrationView: View {
                     }
                 case .emailTaken:
                     ResultModalView(
-                        imageName: "ErrorImage",
+                        imageName: "emailErrorImg",
                         title: "That email is already registered",
                         buttonText: "Try again"
                     ) {
@@ -99,23 +99,34 @@ struct ResultModalView: View {
     var onDismiss: () -> Void
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(imageName) // вставь свои картинки в Assets с именами "SuccessImage" и "ErrorImage"
+        VStack(spacing: 24) {
+            Image(imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 200, height: 200)
 
             Text(title)
-                .font(.headline)
+                .font(.nunoRegular(size: 20))
+                .foregroundStyle(Color.black.opacity(0.87))
 
-            Button(buttonText) {
-                onDismiss()
-            }
-            .padding()
-            .background(Color.yellow)
-            .cornerRadius(10)
+            actionButton()
         }
+        .background(Color.white)
         .padding()
+    }
+    
+    func actionButton() -> some View {
+        Button {
+            onDismiss()
+        } label: {
+            Text(buttonText)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 24)
+                .foregroundStyle(Color.black.opacity(0.87))
+                .background{
+                    RoundedRectangle(cornerRadius: 24).fill(TTColors.primary)
+                }
+        }
     }
 }
 
