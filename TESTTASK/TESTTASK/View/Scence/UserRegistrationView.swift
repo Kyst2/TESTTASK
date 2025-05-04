@@ -23,6 +23,26 @@ struct UserRegistrationView: View {
             .padding(.top, 32)
             .padding(.horizontal, 16)
         }
+        .fullScreenCover(item: $model.result, content: { result in
+            switch result {
+                case .success:
+                    ResultModalView(
+                        imageName: "SuccessImage",
+                        title: "User successfully registered",
+                        buttonText: "Got it"
+                    ) {
+                        model.result = nil
+                    }
+                case .emailTaken:
+                    ResultModalView(
+                        imageName: "ErrorImage",
+                        title: "That email is already registered",
+                        buttonText: "Try again"
+                    ) {
+                        model.result = nil
+                    }
+                }
+        })
     }
     
     @ViewBuilder
@@ -72,6 +92,32 @@ struct UserRegistrationView: View {
     }
 }
 
+struct ResultModalView: View {
+    var imageName: String
+    var title: String
+    var buttonText: String
+    var onDismiss: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(imageName) // вставь свои картинки в Assets с именами "SuccessImage" и "ErrorImage"
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+
+            Text(title)
+                .font(.headline)
+
+            Button(buttonText) {
+                onDismiss()
+            }
+            .padding()
+            .background(Color.yellow)
+            .cornerRadius(10)
+        }
+        .padding()
+    }
+}
 
 
 

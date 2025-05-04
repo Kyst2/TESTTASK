@@ -12,13 +12,13 @@ class RegistrationViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isRegistering: Bool = false
     @Published var errorMessage: String?
-    @Published var registrationSuccessful: Bool = false
     
     @Published var nameError: String?
     @Published var emailError: String?
     @Published var phoneError: String?
     @Published var photoError: String?
     
+    @Published var result: RegistrationResult?
     init() {
         loadPositions()
     }
@@ -51,13 +51,7 @@ class RegistrationViewModel: ObservableObject {
             return
         }
         
-        guard let photo = photo else {
-            return
-        }
-        
-        guard let positionId = selectedPositionId else {
-            return
-        }
+        guard let photo = photo, let positionId = selectedPositionId else { return }
         
         isRegistering = true
         
@@ -67,18 +61,26 @@ class RegistrationViewModel: ObservableObject {
             phone: phone,
             positionId: positionId
         )
-        print("userData")
+        
         APIClient.shared.registerUser(user: userData, avatar: photo) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isRegistering = false
                 
                 switch result {
-                case .success(let message):
-                    self?.registrationSuccessful = true
+                case .success:
+                    self?.result = .success
                     
                     self?.resetForm()
                 case .failure(let error):
-                    self?.errorMessage = "Registration error: \(error.localizedDescription)"
+                    if let error = error as? NSError {
+                        if error.code == 409 {
+                            self?.result = .emailTaken
+                        } else {
+                            self?.errorMessage = "Registration error: \(error.localizedDescription)"
+                        }
+                    } else {
+                        self?.errorMessage = "Unknown error: \(error.localizedDescription)"
+                    }
                 }
             }
         }
@@ -142,5 +144,18 @@ extension RegistrationViewModel {
         }
         
         return true
+    }
+}
+
+
+enum RegistrationResult: Identifiable {
+    case success
+    case emailTaken
+
+    var id: Int {
+        switch self {
+        case .success: return 0
+        case .emailTaken: return 1
+        }
     }
 }
