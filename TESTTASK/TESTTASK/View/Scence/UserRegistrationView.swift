@@ -61,7 +61,7 @@ struct UserRegistrationView: View {
             FloatingLabelTextField(label: "Phone",
                                    text: $model.phone,
                                    errorText: $model.phoneError,
-                                   supportingText: "+38 (XXX) XXX - XX - XX")
+                                   supportingText: "+38 (0XX) XXX - XX - XX")
         }
     }
     
