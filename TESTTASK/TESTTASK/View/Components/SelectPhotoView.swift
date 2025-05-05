@@ -17,26 +17,11 @@ struct SelectPhotoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                if let photo = model.photo {
-                    Image(uiImage: photo)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 70 , height: 70)
-                        .clipped()
-                } else {
-                    Text("Upload your photo")
-                        .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))
-                        .font(.nunoRegular(size: 16))
-                }
+                TextOrPhoto()
                 
                 Spacer()
                 
-                Button {
-                    isShowDialog = true
-                } label: {
-                    Text("Upload")
-                        .foregroundStyle(.blue)
-                }
+                SHowDialogBtn()
             }
             .frame(maxWidth: .infinity)
             .padding(16)
@@ -49,12 +34,7 @@ struct SelectPhotoView: View {
                     .fill(Color.white)
             )
             
-            if let errorText = model.photoError{
-                Text(errorText)
-                    .font(.nunoRegular(size: 12))
-                    .foregroundStyle(TTColors.red)
-                    .padding(.horizontal, 16)
-            }
+            ErrorText()
         }
         .confirmationDialog("Choose how you want to add a photo", isPresented: $isShowDialog, titleVisibility: .visible, actions: {
             Button {
@@ -82,7 +62,6 @@ struct SelectPhotoView: View {
         }
         .onChange(of: selectedItem) { newItem in
             Task {
-                // Обрабатываем выбранное фото
                 if let data = try? await newItem?.loadTransferable(type: Data.self),
                    let uiImage = UIImage(data: data) {
                     DispatchQueue.main.async {
@@ -90,6 +69,40 @@ struct SelectPhotoView: View {
                     }
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    func TextOrPhoto() -> some View {
+        if let photo = model.photo {
+            Image(uiImage: photo)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 70 , height: 70)
+                .clipped()
+        } else {
+            Text("Upload your photo")
+                .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))
+                .font(.nunoRegular(size: 16))
+        }
+    }
+    
+    func SHowDialogBtn() -> some View {
+        Button {
+            isShowDialog = true
+        } label: {
+            Text("Upload")
+                .foregroundStyle(.blue)
+        }
+    }
+    
+    @ViewBuilder
+    func ErrorText() -> some View {
+        if let errorText = model.photoError{
+            Text(errorText)
+                .font(.nunoRegular(size: 12))
+                .foregroundStyle(TTColors.red)
+                .padding(.horizontal, 16)
         }
     }
     
