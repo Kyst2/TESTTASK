@@ -23,11 +23,8 @@ struct ContentView: View {
             }
             .background(Color.white)
         } else {
-            ResultModalView(imageName: "noConnect", title: "There is no internet connection", buttonText: "Try again") {
-                
-            }
+            ResultModalView(imageName: "noConnect", title: "There is no internet connection", buttonText: "Try again") { }
         }
-        
     }
     
     @ViewBuilder
