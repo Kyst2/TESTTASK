@@ -111,8 +111,9 @@ struct ResultModalView: View {
 
             actionButton()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
-        .padding()
+//        .padding()
     }
     
     func actionButton() -> some View {

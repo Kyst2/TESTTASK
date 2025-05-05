@@ -1,25 +1,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(NetworkMonitor.self) private var newtworkMonitor
+    
     @State private var selectTab: Int = 0
     
     var body: some View {
-        VStack(spacing: 0) {
-            TopBar()
-            
-            TabView(selection: $selectTab) {
-                UsersListView()
-                    .tag(0)
+        if newtworkMonitor.isConnected {
+            VStack(spacing: 0) {
+                TopBar()
                 
-                UserRegistrationView()
-                    .tag(1)
+                TabView(selection: $selectTab) {
+                    UsersListView()
+                        .tag(0)
+                    
+                    UserRegistrationView()
+                        .tag(1)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                BottomBar()
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            BottomBar()
+            .background(Color.white)
+        } else {
+            ResultModalView(imageName: "noConnect", title: "There is no internet connection", buttonText: "Try again") {
+                
+            }
         }
-        .background(Color.white)
+        
     }
+    
+//    func checkConnect() -> some View {
+//        if newtworkMonitor.isConnected {
+//            
+//        } else {
+//            ResultModalView(imageName: "", title: "There is no internet connection", buttonText: <#T##String#>, onDismiss: <#T##() -> Void#>)
+//        }
+//    }
     
     @ViewBuilder
     func TopBar() -> some View {

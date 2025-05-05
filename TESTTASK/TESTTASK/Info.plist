@@ -2,13 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We use a gallery so you can choose an image</string>
-	<key>NSCameraUsageDescription</key>
-	<string>We use the camera to add a photo to the task</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Nuno.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>yellow</string>
+		<key>UIImageName</key>
+		<string>Logo</string>
+		<key>UILaunchScreen</key>
+		<dict/>
+	</dict>
 </dict>
 </plist>
