@@ -114,17 +114,21 @@ extension RegistrationViewModel {
             nameError = "Name must be between 2 and 60 characters."
             return false
         }
+        
+        nameError = nil
         return true
     }
     
     func validateEmail() -> Bool {
-        let regex = #"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$"#
+        let regex = #"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"#
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
         if !predicate.evaluate(with: email) {
-            emailError = "Invalid email format."
+            emailError = "Invalid email format. Use only lowercase letters."
             return false
         }
         
+        emailError = nil
         return true
     }
     
@@ -132,9 +136,11 @@ extension RegistrationViewModel {
         let regex = #"^\+?380[0-9]{9}$"#
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         if !predicate.evaluate(with: phone) {
-            phoneError = "Phone must be in format +38(XXX) XXX - XX - XX."
+            phoneError = "Phone must be in format +38(0XX) XXX - XX - XX."
             return false
         }
+        
+        phoneError = nil
         return true
     }
         
@@ -144,6 +150,7 @@ extension RegistrationViewModel {
             return false
         }
         
+        photoError = nil
         return true
     }
 }
