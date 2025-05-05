@@ -19,6 +19,7 @@ class RegistrationViewModel: ObservableObject {
     @Published var photoError: String?
     
     @Published var result: RegistrationResult?
+    
     init() {
         loadPositions()
     }
@@ -146,7 +147,6 @@ extension RegistrationViewModel {
         return true
     }
 }
-
 
 enum RegistrationResult: Identifiable {
     case success
