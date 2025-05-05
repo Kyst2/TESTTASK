@@ -20,19 +20,9 @@ struct FloatingLabelTextField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .leading) {
-                Text(label)
-                    .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))
-                    .font(.nunoRegular(size: 16))
-                    .offset(y: (isFocused || !text.isEmpty) ? -22 : 0)
-                    .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1, anchor: .leading)
-                    .animation(.easeOut(duration: 0.15), value: isFocused || !text.isEmpty)
-
-                TextField("", text: $text)
-                    .frame(maxWidth: .infinity)
-                    .font(.nunoRegular(size: 16))
-                    .foregroundStyle(Color.black.opacity(0.87))
-                    .focused($isFocused)
-                    .padding(.top, 8)
+                Label()
+                
+                CustomTextField()
             }
             .padding(12)
             .overlay(
@@ -44,17 +34,40 @@ struct FloatingLabelTextField: View {
                     .fill(Color.white)
             )
             
-            if let errorText = errorText{
-                Text(errorText)
-                    .font(.nunoRegular(size: 12))
-                    .foregroundStyle(TTColors.red)
-                    .padding(.horizontal, 16)
-            } else if let supportingText = supportingText{
-                Text(supportingText)
-                    .font(.nunoRegular(size: 12))
-                    .foregroundStyle(.black.opacity(0.6))
-                    .padding(.horizontal, 16)
-            }
+            ErrorOrSupportText()
+        }
+    }
+    
+    func Label() -> some View {
+        Text(label)
+            .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))
+            .font(.nunoRegular(size: 16))
+            .offset(y: (isFocused || !text.isEmpty) ? -22 : 0)
+            .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1, anchor: .leading)
+            .animation(.easeOut(duration: 0.15), value: isFocused || !text.isEmpty)
+    }
+    
+    func CustomTextField() -> some View {
+        TextField("", text: $text)
+            .frame(maxWidth: .infinity)
+            .font(.nunoRegular(size: 16))
+            .foregroundStyle(Color.black.opacity(0.87))
+            .focused($isFocused)
+            .padding(.top, 8)
+    }
+    
+    @ViewBuilder
+    func ErrorOrSupportText() -> some View {
+        if let errorText = errorText{
+            Text(errorText)
+                .font(.nunoRegular(size: 12))
+                .foregroundStyle(TTColors.red)
+                .padding(.horizontal, 16)
+        } else if let supportingText = supportingText{
+            Text(supportingText)
+                .font(.nunoRegular(size: 12))
+                .foregroundStyle(.black.opacity(0.6))
+                .padding(.horizontal, 16)
         }
     }
     
