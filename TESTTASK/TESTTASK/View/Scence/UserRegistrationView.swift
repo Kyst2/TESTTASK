@@ -11,7 +11,7 @@ struct UserRegistrationView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: 24) {
                 PersonalData()
                 
                 PositionalsRadioGroup()
@@ -20,7 +20,7 @@ struct UserRegistrationView: View {
                 
                 SignUpBtn()
             }
-            .padding(.top, 32)
+            .padding(.vertical, 32)
             .padding(.horizontal, 16)
         }
         .fullScreenCover(item: $model.result, content: { result in
@@ -47,20 +47,22 @@ struct UserRegistrationView: View {
     
     @ViewBuilder
     func PersonalData() -> some View {
-        FloatingLabelTextField(label: "Your name",
-                              text: $model.name,
-                              errorText: $model.nameError,
-                              supportingText: nil)
-        
-        FloatingLabelTextField(label: "Email",
-                              text: $model.email,
-                              errorText: $model.emailError,
-                              supportingText: nil)
-        
-        FloatingLabelTextField(label: "Phone",
-                              text: $model.phone,
-                              errorText: $model.phoneError,
-                              supportingText: "+38(XXX) XXX - XX - XX")
+        VStack(spacing: 32) {
+            FloatingLabelTextField(label: "Your name",
+                                   text: $model.name,
+                                   errorText: $model.nameError,
+                                   supportingText: nil)
+            
+            FloatingLabelTextField(label: "Email",
+                                   text: $model.email,
+                                   errorText: $model.emailError,
+                                   supportingText: nil)
+            
+            FloatingLabelTextField(label: "Phone",
+                                   text: $model.phone,
+                                   errorText: $model.phoneError,
+                                   supportingText: "+38(XXX) XXX - XX - XX")
+        }
     }
     
     @ViewBuilder
@@ -80,57 +82,21 @@ struct UserRegistrationView: View {
     }
     
     func SignUpBtn() -> some View {
-        Button {
-            model.registerUser()
-        } label: {
-            HStack{
+        HStack{
+            Spacer()
+            
+            Button {
+                model.registerUser()
+            } label: {
                 Text("Sign Up")
-                    
             }
+            .buttonStyle(PrimaryButtonStyle(isEnabled: isEnabled()))
+            
+            Spacer()
         }
-
-    }
-}
-
-struct ResultModalView: View {
-    var imageName: String
-    var title: String
-    var buttonText: String
-    var onDismiss: () -> Void
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Image(imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 200, height: 200)
-
-            Text(title)
-                .font(.nunoRegular(size: 20))
-                .foregroundStyle(Color.black.opacity(0.87))
-
-            actionButton()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-//        .padding()
     }
     
-    func actionButton() -> some View {
-        Button {
-            onDismiss()
-        } label: {
-            Text(buttonText)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 24)
-                .foregroundStyle(Color.black.opacity(0.87))
-                .background{
-                    RoundedRectangle(cornerRadius: 24).fill(TTColors.primary)
-                }
-        }
+    func isEnabled() -> Bool {
+        return !model.email.isEmpty || !model.name.isEmpty || !model.phone.isEmpty
     }
 }
-
-
-
-

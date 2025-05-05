@@ -30,14 +30,6 @@ struct ContentView: View {
         
     }
     
-//    func checkConnect() -> some View {
-//        if newtworkMonitor.isConnected {
-//            
-//        } else {
-//            ResultModalView(imageName: "", title: "There is no internet connection", buttonText: <#T##String#>, onDismiss: <#T##() -> Void#>)
-//        }
-//    }
-    
     @ViewBuilder
     func TopBar() -> some View {
         let requestTypeText: String = selectTab == 0 ? "GET" : "POST"
@@ -70,7 +62,6 @@ struct ContentView: View {
         .background(TTColors.gray)
     }
 }
-
 
 ////////////////
 ///HELPERS
