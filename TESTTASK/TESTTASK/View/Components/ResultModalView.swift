@@ -3,7 +3,7 @@ import SwiftUI
 struct ResultModalView: View {
     var imageName: String
     var title: String
-    var buttonText: String
+    var buttonText: String?
     var onDismiss: () -> Void
 
     var body: some View {
@@ -16,24 +16,22 @@ struct ResultModalView: View {
             Text(title)
                 .font(.nunoRegular(size: 20))
                 .foregroundStyle(Color.black.opacity(0.87))
-
-            actionButton()
+            
+                actionButton()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
     }
     
+    @ViewBuilder
     func actionButton() -> some View {
-        Button {
-            onDismiss()
-        } label: {
-            Text(buttonText)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 24)
-                .foregroundStyle(Color.black.opacity(0.87))
-                .background{
-                    RoundedRectangle(cornerRadius: 24).fill(TTColors.primary)
-                }
+        if let buttonText = buttonText {
+            Button {
+                onDismiss()
+            } label: {
+                Text(buttonText)
+            }
+            .buttonStyle(PrimaryButtonStyle())
         }
     }
 }

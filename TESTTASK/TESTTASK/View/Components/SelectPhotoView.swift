@@ -22,6 +22,7 @@ struct SelectPhotoView: View {
                         .resizable()
                         .scaledToFill()
                         .frame(width: 70 , height: 70)
+                        .clipped()
                 } else {
                     Text("Upload your photo")
                         .foregroundColor(accentColors(grayColor: Color.black.opacity(0.48)))

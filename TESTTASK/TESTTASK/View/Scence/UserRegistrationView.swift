@@ -11,7 +11,7 @@ struct UserRegistrationView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(spacing: 24) {
                 PersonalData()
                 
                 PositionalsRadioGroup()
@@ -61,23 +61,24 @@ struct UserRegistrationView: View {
             FloatingLabelTextField(label: "Phone",
                                    text: $model.phone,
                                    errorText: $model.phoneError,
-                                   supportingText: "+38(XXX) XXX - XX - XX")
+                                   supportingText: "+38 (XXX) XXX - XX - XX")
         }
     }
     
     @ViewBuilder
     func PositionalsRadioGroup() -> some View {
-        Text("Select your position")
-            .font(.nunoRegular(size: 18))
-            .foregroundStyle(.black.opacity(0.87))
-        
-        if !model.positions.isEmpty {
-            RadioButtonGroupView(model: model)
-                .padding(.top,-12)
-        } else if model.isLoading {
-            ProgressView()
-                .padding()
-                .frame(maxWidth: .infinity)
+        VStack(alignment : .leading, spacing: 12) {
+            Text("Select your position")
+                .font(.nunoRegular(size: 18))
+                .foregroundStyle(.black.opacity(0.87))
+            
+            if !model.positions.isEmpty {
+                RadioButtonGroupView(model: model)
+            } else if model.isLoading {
+                ProgressView()
+                    .padding()
+                    .frame(maxWidth: .infinity)
+            }
         }
     }
     

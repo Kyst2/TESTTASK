@@ -16,7 +16,7 @@ struct FloatingLabelTextField: View {
     }
     
     @FocusState private var isFocused: Bool
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .leading) {
@@ -28,6 +28,7 @@ struct FloatingLabelTextField: View {
                     .animation(.easeOut(duration: 0.15), value: isFocused || !text.isEmpty)
 
                 TextField("", text: $text)
+                    .frame(maxWidth: .infinity)
                     .font(.nunoRegular(size: 16))
                     .foregroundStyle(Color.black.opacity(0.87))
                     .focused($isFocused)
